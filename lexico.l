@@ -3,35 +3,37 @@
   # include "sintatico.tab.h"
 %}
 
-int         -?[0-9]+
-float       -?(([0-9]*\.[0-9]+)|([0-9]+\.[0-9]*)|([0-9]+))
-var         [_a-zA-Z][_a-zA-Z0-9]*
-comment     \/\/.*
-comp_op     [>=<]
-add_op      [+-]
-mul_op      [\*\/]
-assign_op   ":="
+number        [0-9]+
+identifier    [a-zA-Z]+
+comment       \/\/.*
 
 %%
+"if"          {return IF;}
+"then"        {return THEN;}
+"else"        {return ELSE;}
+"end"         {return END;}
+"repeat"      {return REPEAT;}
+"until"       {return UNTIL;}
+"read"        {return READ;}
+"write"       {return WRITE;}
 
-"read"      {return READ;}
-"write"     {return WRITE;}
-"until"     {return UNTIL;}
-"repeat"    {return REPEAT;}
-"end"       {return END;}
+"+"           {return PLUS;}
+"-"           {return MINUS;}
+"*"           {return TIMES;}
+"/"           {return OVER;}
+"="           {return EQ;}
+"<"           {return LT;}
+"("           {return LPAREN;}
+")"           {return RPAREN;}
+";"           {return SEMICOL;}
+":="          {return ASSIGN;}
 
-{int}       {return INTEGER;}
-{float}     {return FLOAT;}
-{var}       {return VAR;}
-{comment}   {;}
-{comp_op}   {return COMPOP;}
-{add_op}    {return ADDOP;}
-{mul_op}    {return MULOP;}
-{assign_op} {return ASSIGNOP;}
+{number}      {return NUMBER;}
+{identifier}  {return ID;}
 
-[ \t]+      {;}
-.|\n        {return yytext[0];}
-
+{comment}     {;}
+[ \t]+        {;}
+.|\n          {return yytext[0];}
 %%
 
 int yywrap() {

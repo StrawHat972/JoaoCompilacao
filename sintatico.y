@@ -6,63 +6,97 @@
     int yylex();
 %}
 
-%token READ
-%token WRITE
+%token IF
+%token THEN
+%token ELSE
+%token END
 %token REPEAT
 %token UNTIL
-%token END
-%token INTEGER
-%token FLOAT
-%token VAR
-%token COMPOP
-%token ADDOP
-%token MULOP
-%token ASSIGNOP
+%token READ
+%token WRITE
+
+%token PLUS
+%token MINUS
+%token TIMES
+%token OVER
+%token EQ
+%token LT
+%token LPAREN
+%token RPAREN
+%token SEMICOL
+%token ASSIGN
+
+%token NUMBER
+%token ID
 
 %%
-
-input:  /* empty */
+input
+        : /* empty */
         | input line
-;
-line:   '\n' 
+        ;
+line
+        : '\n' 
         | program '\n' {printf("Programa sintaticamente correto!\n");}
-;
-
-program: stmt-sequence {;}
-;
-stmt-sequence:  statement                       {;} 
-                | stmt-sequence ';' statement   {;}
-;
-statement:  repeat-stmt     {;}
-            | assign-stmt   {;}
-            | read-stmt     {;}
-            | write-stmt    {;}
-;
-
-repeat-stmt: REPEAT stmt-sequence UNTIL exp {;}
-;
-assign-stmt: VAR ASSIGNOP exp {;}
-;
-read-stmt: READ VAR {;}
-;
-write-stmt: WRITE exp {;}
-;
-
-exp:    simple-exp COMPOP simple-exp {;}
-        | simple-exp                 {;}
-;
-simple-exp: simple-exp ADDOP term   {;}
-            | term                  {;}
-;
-term:   term MULOP factor   {;}
+        ;
+program
+        : stmt-seq {;}
+        ;
+stmt-seq
+        : stmt-seq SEMICOL stmt {;}
+        | stmt                  {;}
+        ;
+stmt
+        : if-stmt     {;}
+        | repeat-stmt {;}
+        | assign-stmt {;}
+        | read-stmt   {;}
+        | write-stmt  {;}
+        ;
+if-stmt
+        : IF exp THEN stmt-seq END               {;}
+        | IF exp THEN stmt-seq ELSE stmt-seq END {;}
+        ;
+repeat-stmt
+        : REPEAT stmt-seq UNTIL exp {;}
+        ;
+assign-stmt
+        : ID ASSIGN exp {;}
+        ;
+read-stmt
+        : READ ID {;}
+        ;
+write-stmt
+        : WRITE exp {;}
+        ;
+exp
+        : simple-exp comp-op simple-exp {;}
+        | simple-exp                    {;}
+        ;
+comp-op
+        : LT {;}
+        | EQ {;}
+        ;
+simple-exp
+        : simple-exp addop term {;}
+        | term                  {;}
+        ;
+addop
+        : PLUS  {;}
+        | MINUS {;}
+        ;
+term
+        : term mulop factor {;}
         | factor            {;}
-;
-factor: '(' exp ')' {;}
-        | INTEGER   {;}
-        | VAR       {;}
-        | FLOAT     {;}
-;
-
+        ;
+mulop
+        : TIMES {;}
+        | OVER  {;}
+        ;
+factor
+        : LPAREN exp RPAREN {;}
+        | NUMBER            {;}
+        | ID                {;}
+        ;
 %%
 
 int main(int argc, char *argv[]){
