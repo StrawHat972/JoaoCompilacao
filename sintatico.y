@@ -42,6 +42,9 @@
 program
 	: stmt-seq
 		{savedTree = $1;}
+	| /* empty */
+		{printf("[!] Nenhum comando foi encontrado no arquivo de entrada\n");
+		 Error = TRUE;}
 	;
 stmt-seq
 	: stmt-seq SEMICOL stmt
@@ -164,11 +167,13 @@ factor
 %%
 
 void yyerror(const char *str) {
-	printf("[!] Problema com a analise sintatica\n");
+	printf("[!] Problema com a analise sintatica na linha %d\n", lineno);
+	Error = TRUE;
 }
 
 TreeNode* parser(){
 	yyin = source;
+	lineno++;
 	yyparse();
 	return savedTree;
 }

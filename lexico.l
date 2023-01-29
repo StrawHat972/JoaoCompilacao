@@ -7,6 +7,8 @@
 	char tokenStr[MAXTOKENLEN+1];
 %}
 
+%x SC_COMMENT
+
 number	[0-9]+
 id		[a-zA-Z]+
 
@@ -33,6 +35,13 @@ id		[a-zA-Z]+
 
 {number}	{copyStr(tokenStr, yytext); return NUMBER;}
 {id}		{copyStr(tokenStr, yytext); return ID;}
+
+"{"			{BEGIN(SC_COMMENT);}
+<SC_COMMENT>{
+	"}"		{BEGIN(INITIAL);}
+	\n 		{lineno++;}
+	.		{;}
+}
 
 [ \t\r]+	{;}
 \n			{lineno++;}

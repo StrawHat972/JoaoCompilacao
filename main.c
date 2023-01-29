@@ -2,6 +2,7 @@
 #include "sintatico.tab.h"
 
 int lineno = 0;
+int Error = FALSE;
 FILE* source;
 
 int main(int argc, char *argv[]){
@@ -13,7 +14,8 @@ int main(int argc, char *argv[]){
 	TreeNode* SyntaxTree = parser();
 	fclose(source);
 
-	printTree(SyntaxTree);
+	if(!Error)
+		printTree(SyntaxTree);
 	deleteTree(&SyntaxTree);
 	return 0;
 }

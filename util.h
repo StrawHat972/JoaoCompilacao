@@ -5,6 +5,8 @@
 
 #define MAXCHILDREN 3
 #define MAXTOKENLEN 50
+#define FALSE 0
+#define TRUE 1
 
 typedef enum {StmtK, ExpK} NodeKind;
 typedef enum {IfK, RepeatK, AssignK, ReadK, WriteK} StmtKind;
@@ -25,6 +27,7 @@ typedef struct treeNode {
 
 extern char tokenStr[MAXTOKENLEN+1];
 extern int lineno;
+extern int Error;
 extern FILE* source;
 
 TreeNode* newStmtNode(StmtKind kind);

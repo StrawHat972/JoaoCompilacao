@@ -1,3 +1,7 @@
+{
+    Isso eh um comentario
+}
+
 x := 4;
 repeat
     read y;
