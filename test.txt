@@ -1,0 +1,9 @@
+x := 4;
+repeat
+    read y;
+    x := x + y * (3 + 2)
+until 100 < x;
+read z;
+if x < z then
+    write x = z
+end

@@ -34,8 +34,9 @@ id		[a-zA-Z]+
 {number}	{copyStr(tokenStr, yytext); return NUMBER;}
 {id}		{copyStr(tokenStr, yytext); return ID;}
 
-[ \t]+		{;}
-.|\n 		{return yytext[0];}
+[ \t\r]+	{;}
+\n			{lineno++;}
+.			{return yytext[0];}
 %%
 
 int yywrap(){

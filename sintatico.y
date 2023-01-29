@@ -3,12 +3,15 @@
 	#include <stdio.h>
 	#include "util.h"
 
+	extern int yylex();
+	extern FILE* yyin;
+
 	void yyerror(const char *str);
-	int yylex();
 
 	#define YYSTYPE TreeNode*
 
 	static char* savedName;
+	static int savedLineNo;
 	static TreeNode* savedTree;
 %}
 
@@ -36,14 +39,6 @@
 %token ID
 
 %%
-input
-	: /* empty */
-	| input line
-	;
-line
-	: '\n' 
-	| program '\n' {printf("Programa sintaticamente correto!\n");}
-	;
 program
 	: stmt-seq
 		{savedTree = $1;}
@@ -51,10 +46,12 @@ program
 stmt-seq
 	: stmt-seq SEMICOL stmt
 		{TreeNode* node = $1;
-		 while(node->sibling != NULL)
-			node = node->sibling;
-		 node->sibling = $3;
-		 $$ = $1;
+		 if(node != NULL){
+			while(node->sibling != NULL)
+				node = node->sibling;
+			node->sibling = $3;
+			$$ = $1;
+		 } else $$ = $3;
 		}
 	| stmt
 		{$$ = $1;}
@@ -70,6 +67,8 @@ stmt
 		{$$ = $1;}
 	| write-stmt
 		{$$ = $1;}
+	| error
+		{$$ = NULL;}
 	;
 if-stmt
 	: IF exp THEN stmt-seq END
@@ -90,11 +89,13 @@ repeat-stmt
 	;
 assign-stmt
 	: ID
-		{savedName = copyStr(tokenStr);}
+		{savedName = copyStr(tokenStr);
+		 savedLineNo = lineno;}
 	  ASSIGN exp
 	  	{$$ = newStmtNode(AssignK);
 		 $$->child[0] = $4;
-		 $$->attr.name = savedName;}
+		 $$->attr.name = savedName;
+		 $$->lineno = savedLineNo;}
 	;
 read-stmt
 	: READ ID
@@ -157,14 +158,17 @@ factor
 	| ID
 		{$$ = newExpNode(IdK);
 		 $$->attr.name = copyStr(tokenStr);}
+	| error
+		{$$ = NULL;}
 	;
 %%
 
 void yyerror(const char *str) {
-	printf("Problema com a analise sintatica!\n");
+	printf("[!] Problema com a analise sintatica\n");
 }
 
 TreeNode* parser(){
+	yyin = source;
 	yyparse();
 	return savedTree;
 }
