@@ -16,13 +16,13 @@ typedef enum {Void, Integer, Boolean} ExpType;
 typedef int TokenType;
 
 typedef struct treeNode {
-    struct treeNode* child[MAXCHILDREN];
-    struct treeNode* sibling;
-    int lineno;
-    NodeKind nodeK;
-    union {StmtKind stmt; ExpKind exp;} kind;
-    union {TokenType op; int val; char* name;} attr;
-    ExpType type;
+	struct treeNode* child[MAXCHILDREN];
+	struct treeNode* sibling;
+	int lineno;
+	NodeKind nodeK;
+	union {StmtKind stmt; ExpKind exp;} kind;
+	union {TokenType op; int val; char* name;} attr;
+	ExpType type;
 } TreeNode;
 
 extern char tokenStr[MAXTOKENLEN+1];
