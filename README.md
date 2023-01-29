@@ -14,7 +14,12 @@ flex lexico.l
 
 Uma vez gerados os dois códigos, basta compilá-los usando o comando a seguir:
 ```sh
-gcc -o analisador sintatico.tab.c lex.yy.c
+gcc -o analisador main.c sintatico.tab.c lex.yy.c util.c
+```
+
+Deve ser passado o nome do arquivo de entrada por linha de comando, por exemplo:
+```sh
+./analisador test.txt
 ```
 
 Observação: Pode ser usado também o g++ para compilação caso utilize códigos em C++.
