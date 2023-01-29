@@ -1,9 +1,15 @@
 /* Analisador Sintatico */
 %{
-    #include "stdio.h"
+	#include <stdio.h>
+	#include "util.h"
 
-    int yyerror(const char *str);
-    int yylex();
+	void yyerror(const char *str);
+	int yylex();
+
+	#define YYSTYPE TreeNode*
+
+	static char* savedName;
+	static TreeNode* savedTree;
 %}
 
 %token IF
@@ -31,80 +37,134 @@
 
 %%
 input
-        : /* empty */
-        | input line
-        ;
+	: /* empty */
+	| input line
+	;
 line
-        : '\n' 
-        | program '\n' {printf("Programa sintaticamente correto!\n");}
-        ;
+	: '\n' 
+	| program '\n' {printf("Programa sintaticamente correto!\n");}
+	;
 program
-        : stmt-seq {;}
-        ;
+	: stmt-seq
+		{savedTree = $1;}
+	;
 stmt-seq
-        : stmt-seq SEMICOL stmt {;}
-        | stmt                  {;}
-        ;
+	: stmt-seq SEMICOL stmt
+		{TreeNode* node = $1;
+		 while(node->sibling != NULL)
+			node = node->sibling;
+		 node->sibling = $3;
+		 $$ = $1;
+		}
+	| stmt
+		{$$ = $1;}
+	;
 stmt
-        : if-stmt     {;}
-        | repeat-stmt {;}
-        | assign-stmt {;}
-        | read-stmt   {;}
-        | write-stmt  {;}
-        ;
+	: if-stmt
+		{$$ = $1;}
+	| repeat-stmt
+		{$$ = $1;}
+	| assign-stmt
+		{$$ = $1;}
+	| read-stmt
+		{$$ = $1;}
+	| write-stmt
+		{$$ = $1;}
+	;
 if-stmt
-        : IF exp THEN stmt-seq END               {;}
-        | IF exp THEN stmt-seq ELSE stmt-seq END {;}
-        ;
+	: IF exp THEN stmt-seq END
+		{$$ = newStmtNode(IfK);
+         $$->child[0] = $2;
+         $$->child[1] = $4;}
+	| IF exp THEN stmt-seq ELSE stmt-seq END
+		{$$ = newStmtNode(IfK);
+         $$->child[0] = $2;
+         $$->child[1] = $4;
+		 $$->child[2] = $6;}
+	;
 repeat-stmt
-        : REPEAT stmt-seq UNTIL exp {;}
-        ;
+	: REPEAT stmt-seq UNTIL exp
+		{$$ = newStmtNode(RepeatK);
+		 $$->child[0] = $2;
+		 $$->child[1] = $4;}
+	;
 assign-stmt
-        : ID ASSIGN exp {;}
-        ;
+	: ID
+		{savedName = copyStr(tokenStr);}
+	  ASSIGN exp
+	  	{$$ = newStmtNode(AssignK);
+		 $$->child[0] = $4;
+		 $$->attr.name = savedName;}
+	;
 read-stmt
-        : READ ID {;}
-        ;
+	: READ ID
+		{$$ = newStmtNode(ReadK);
+		 $$->attr.name = copyStr(tokenStr);}
+	;
 write-stmt
-        : WRITE exp {;}
-        ;
+	: WRITE exp
+		{$$ = newStmtNode(WriteK);
+		 $$->child[0] = $2;}
+    ;
 exp
-        : simple-exp comp-op simple-exp {;}
-        | simple-exp                    {;}
-        ;
-comp-op
-        : LT {;}
-        | EQ {;}
-        ;
+	: simple-exp LT simple-exp
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = LT;}
+	| simple-exp EQ simple-exp
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = EQ;}
+	| simple-exp
+		{$$ = $1;}
+	;
 simple-exp
-        : simple-exp addop term {;}
-        | term                  {;}
-        ;
-addop
-        : PLUS  {;}
-        | MINUS {;}
-        ;
+	: simple-exp PLUS term
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = PLUS;}
+	| simple-exp MINUS term
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = MINUS;}
+	| term
+		{$$ = $1;}
+	;
 term
-        : term mulop factor {;}
-        | factor            {;}
-        ;
-mulop
-        : TIMES {;}
-        | OVER  {;}
-        ;
+	: term TIMES factor
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = TIMES;}
+	| term OVER factor
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = OVER;}
+	| factor
+		{$$ = $1;}
+	;
 factor
-        : LPAREN exp RPAREN {;}
-        | NUMBER            {;}
-        | ID                {;}
-        ;
+	: LPAREN exp RPAREN
+		{$$ = $2;}
+	| NUMBER
+		{$$ = newExpNode(ConstK);
+		 $$->attr.val = atoi(tokenStr);}
+	| ID
+		{$$ = newExpNode(IdK);
+		 $$->attr.name = copyStr(tokenStr);}
+	;
 %%
 
-int main(int argc, char *argv[]){
-    yyparse();
-    return 0;
+void yyerror(const char *str) {
+	printf("Problema com a analise sintatica!\n");
 }
 
-int yyerror(const char *str) {
-    printf("Problema com a analise sintatica!\n");
-    return 0;
+TreeNode* parser(){
+	yyparse();
+	return savedTree;
 }
