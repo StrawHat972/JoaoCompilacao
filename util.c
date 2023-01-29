@@ -1,5 +1,5 @@
 #include "util.h"
-#include "sintatico.tab.h"
+#include "parser.tab.h"
 
 TreeNode* newStmtNode(StmtKind kind){
     TreeNode* node = (TreeNode*) malloc(sizeof(TreeNode));
@@ -58,101 +58,70 @@ void deleteTree(TreeNode** tree){
 	*tree = NULL;
 }
 
-void printToken( TokenType token, const char* tokenString )
-{ switch (token)
-  { case IF:
-    case THEN:
-    case ELSE:
-    case END:
-    case REPEAT:
-    case UNTIL:
-    case READ:
-    case WRITE:
-      printf(
-         "reserved word: %s\n",tokenString);
-      break;
-    case ASSIGN: printf(":=\n"); break;
-    case LT: printf("<\n"); break;
-    case EQ: printf("=\n"); break;
-    case LPAREN: printf("(\n"); break;
-    case RPAREN: printf(")\n"); break;
-    case SEMICOL: printf(";\n"); break;
-    case PLUS: printf("+\n"); break;
-    case MINUS: printf("-\n"); break;
-    case TIMES: printf("*\n"); break;
-    case OVER: printf("/\n"); break;
-    case NUMBER:
-      printf(
-          "NUM, val= %s\n",tokenString);
-      break;
-    case ID:
-      printf(
-          "ID, name= %s\n",tokenString);
-      break;
-    default:
-      printf("Unknown token: %d\n",token);
-  }
+void _printOp(TokenType op){
+	switch(op){
+		case LT:
+			printf("<\n"); break;
+		case EQ:
+			printf("=\n"); break;
+		case PLUS:
+			printf("+\n"); break;
+		case MINUS:
+			printf("-\n"); break;
+		case TIMES:
+			printf("*\n"); break;
+		case OVER:
+			printf("/\n"); break;
+		default:
+			printf("Unknown operation\n"); break;
+	}
 }
 
-static int indentno = 0;
+static int spaces = 0;
 
-#define INDENT indentno+=2
-#define UNINDENT indentno-=2
-
-static void printSpaces(void)
-{ int i;
-  for (i=0;i<indentno;i++)
-    printf(" ");
+void _printSpaces(){
+	for(int i = 0; i < spaces; i++)
+		printf(" ");
 }
 
-void printTree( TreeNode * tree )
-{ int i;
-  INDENT;
-  while (tree != NULL) {
-    printSpaces();
-    if (tree->nodeK==StmtK)
-    { switch (tree->kind.stmt) {
-        case IfK:
-          printf("If\n");
-          break;
-        case RepeatK:
-          printf("Repeat\n");
-          break;
-        case AssignK:
-          printf("Assign to: %s\n",tree->attr.name);
-          break;
-        case ReadK:
-          printf("Read: %s\n",tree->attr.name);
-          break;
-        case WriteK:
-          printf("Write\n");
-          break;
-        default:
-          printf("Unknown ExpNode kind\n");
-          break;
-      }
-    }
-    else if (tree->nodeK==ExpK)
-    { switch (tree->kind.exp) {
-        case OpK:
-          printf("Op: ");
-          printToken(tree->attr.op,"\0");
-          break;
-        case ConstK:
-          printf("Const: %d\n",tree->attr.val);
-          break;
-        case IdK:
-          printf("Id: %s\n",tree->attr.name);
-          break;
-        default:
-          printf("Unknown ExpNode kind\n");
-          break;
-      }
-    }
-    else printf("Unknown node kind\n");
-    for (i=0;i<MAXCHILDREN;i++)
-         printTree(tree->child[i]);
-    tree = tree->sibling;
-  }
-  UNINDENT;
+void printTree(TreeNode* tree){
+	spaces += 2;
+	while(tree != NULL){
+		_printSpaces();
+		if(tree->nodeK == StmtK){
+			switch(tree->kind.stmt){
+				case IfK:
+					printf("If\n"); break;
+				case RepeatK:
+					printf("Repeat\n"); break;
+				case AssignK:
+					printf("Assign to: %s\n", tree->attr.name); break;
+				case ReadK:
+					printf("Read: %s\n", tree->attr.name); break;
+				case WriteK:
+					printf("Write\n"); break;
+				default:
+					printf("Unknown StmtNode kind\n"); break;
+			}
+		}
+		else if(tree->nodeK == ExpK){
+			switch(tree->kind.exp){
+				case OpK:
+					printf("Op: "); _printOp(tree->attr.op); break;
+				case ConstK:
+					printf("Const: %d\n", tree->attr.val); break;
+				case IdK:
+					printf("Id: %s\n", tree->attr.name); break;
+				default:
+					printf("Unknown ExpNode kind\n"); break;
+			}
+		}
+		else
+			printf("Unknown node kind\n");
+
+		for(int i = 0; i < MAXCHILDREN; i++)
+			printTree(tree->child[i]);
+		tree = tree->sibling;
+	}
+	spaces -= 2;
 }

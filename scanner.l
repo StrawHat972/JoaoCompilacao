@@ -1,6 +1,6 @@
 /* Analisador Lexico */
 %{
-	#include "sintatico.tab.h"
+	#include "parser.tab.h"
 	#include "util.h"
 
 	#define copyStr(a, b) strncpy(a, b, MAXTOKENLEN)

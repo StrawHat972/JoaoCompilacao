@@ -43,7 +43,7 @@ program
 	: stmt-seq
 		{savedTree = $1;}
 	| /* empty */
-		{printf("[!] Nenhum comando foi encontrado no arquivo de entrada\n");
+		{printf("[!] No command found in input file\n");
 		 Error = TRUE;}
 	;
 stmt-seq
@@ -167,7 +167,7 @@ factor
 %%
 
 void yyerror(const char *str) {
-	printf("[!] Problema com a analise sintatica na linha %d\n", lineno);
+	printf("[!] Syntax error on line %d\n", lineno);
 	Error = TRUE;
 }
 

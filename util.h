@@ -34,8 +34,10 @@ TreeNode* newStmtNode(StmtKind kind);
 TreeNode* newExpNode(ExpKind kind);
 TreeNode* parser();
 char* copyStr(char* str);
+
 void _deleteNode(TreeNode* node);
 void deleteTree(TreeNode** root);
 
-
-void printTree( TreeNode * );
+void _printOp(TokenType op);
+void _printSpaces();
+void printTree(TreeNode* tree);

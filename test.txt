@@ -10,4 +10,6 @@ until 100 < x;
 read z;
 if x < z then
     write x = z
+else
+    write z < x
 end
