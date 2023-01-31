@@ -11,7 +11,6 @@
 	#define YYSTYPE TreeNode*
 
 	static char* savedName;
-	static int savedLineNo;
 	static TreeNode* savedTree;
 %}
 
@@ -92,13 +91,11 @@ repeat-stmt
 	;
 assign-stmt
 	: ID
-		{savedName = copyStr(tokenStr);
-		 savedLineNo = lineno;}
+		{savedName = copyStr(tokenStr);}
 	  ASSIGN exp
 	  	{$$ = newStmtNode(AssignK);
 		 $$->child[0] = $4;
-		 $$->attr.name = savedName;
-		 $$->lineno = savedLineNo;}
+		 $$->attr.name = savedName;}
 	;
 read-stmt
 	: READ ID

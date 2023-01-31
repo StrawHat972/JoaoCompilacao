@@ -6,7 +6,6 @@
 	#define copyStr(a, b) strncpy(a, b, MAXTOKENLEN)
 	char tokenStr[MAXTOKENLEN+1];
 %}
-
 %x SC_COMMENT
 
 number	[0-9]+

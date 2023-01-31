@@ -1,5 +1,24 @@
 # Comandos para Geração do Arquivo
 
+Esse repositório diz respeito a um compilador da linguagem teórica TINY para Assembly RISC-V.
+
+Para compilar o código do projeto, digite no seu terminal o seguinte comando:
+```sh
+make all
+```
+
+Uma vez gerado o executável, para realizar a compilação é preciso passar o nome do arquivo de entrada por linha de comando, por exemplo:
+```sh
+./compiler test.txt
+```
+
+Utilize o seguinte comando para excluir arquivos gerados pela compilação:
+```sh
+make clean
+```
+
+Caso não possa utilizar a diretiva make, o seguinte passo a passo é necessário para realizar a compilação:
+
 Primeiro, gere o código C do analisador sintático por meio do seguinte comando:
 ```sh
 bison -d parser.y
@@ -14,12 +33,10 @@ flex scanner.l
 
 Uma vez gerados os dois códigos, basta compilá-los usando o comando a seguir:
 ```sh
-gcc -o analisador main.c parser.tab.c lex.yy.c util.c
+g++ -o compiler main.cpp parser.tab.c lex.yy.c util.c analyser.cpp
 ```
 
 Deve ser passado o nome do arquivo de entrada por linha de comando, por exemplo:
 ```sh
-./analisador test.txt
+./compiler test.txt
 ```
-
-Observação: Pode ser usado também o g++ para compilação caso utilize códigos em C++.

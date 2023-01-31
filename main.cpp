@@ -1,9 +1,13 @@
 #include "util.h"
+#include "analyzer.h"
 #include "parser.tab.h"
+
+using namespace std;
 
 int lineno = 0;
 int Error = FALSE;
 FILE* source;
+unordered_map<string, int> symTab;
 
 int main(int argc, char *argv[]){
 	if(argc != 2){
@@ -14,8 +18,12 @@ int main(int argc, char *argv[]){
 	TreeNode* SyntaxTree = parser();
 	fclose(source);
 
-	if(!Error)
+	if(!Error){
 		printTree(SyntaxTree);
+		analyze(SyntaxTree);
+	}
+	if(!Error)
+		printSymTab();
 	deleteTree(&SyntaxTree);
 	return 0;
 }

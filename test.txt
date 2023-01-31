@@ -9,7 +9,7 @@ repeat
 until 100 < x;
 read z;
 if x < z then
-    write x = z
+    write z + x
 else
-    write z < x
+    write x - z
 end

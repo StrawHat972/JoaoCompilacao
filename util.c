@@ -7,7 +7,6 @@ TreeNode* newStmtNode(StmtKind kind){
         for(int i = 0; i < MAXCHILDREN; i++)
             node->child[i] = NULL;
         node->sibling = NULL;
-        node->lineno = lineno;
         node->nodeK = StmtK;
         node->kind.stmt = kind;
     }
@@ -20,7 +19,6 @@ TreeNode* newExpNode(ExpKind kind){
         for(int i = 0; i < MAXCHILDREN; i++)
             node->child[i] = NULL;
         node->sibling = NULL;
-        node->lineno = lineno;
         node->nodeK = ExpK;
         node->kind.exp = kind;
         node->type = Void;

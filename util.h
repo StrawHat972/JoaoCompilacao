@@ -18,7 +18,6 @@ typedef int TokenType;
 typedef struct treeNode {
 	struct treeNode* child[MAXCHILDREN];
 	struct treeNode* sibling;
-	int lineno;
 	NodeKind nodeK;
 	union {StmtKind stmt; ExpKind exp;} kind;
 	union {TokenType op; int val; char* name;} attr;
@@ -33,11 +32,7 @@ extern FILE* source;
 TreeNode* newStmtNode(StmtKind kind);
 TreeNode* newExpNode(ExpKind kind);
 TreeNode* parser();
+
 char* copyStr(char* str);
-
-void _deleteNode(TreeNode* node);
 void deleteTree(TreeNode** root);
-
-void _printOp(TokenType op);
-void _printSpaces();
 void printTree(TreeNode* tree);
