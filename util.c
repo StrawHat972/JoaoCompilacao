@@ -62,6 +62,8 @@ void _printOp(TokenType op){
 			printf("<\n"); break;
 		case EQ:
 			printf("=\n"); break;
+		case GT:
+			printf(">\n"); break;
 		case PLUS:
 			printf("+\n"); break;
 		case MINUS:

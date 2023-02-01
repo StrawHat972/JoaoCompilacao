@@ -27,8 +27,9 @@
 %token MINUS
 %token TIMES
 %token OVER
-%token EQ
 %token LT
+%token EQ
+%token GT
 %token LPAREN
 %token RPAREN
 %token SEMICOL
@@ -118,6 +119,11 @@ exp
 		 $$->child[0] = $1;
 		 $$->child[1] = $3;
 		 $$->attr.op = EQ;}
+	| simple-exp GT simple-exp
+		{$$ = newExpNode(OpK);
+		 $$->child[0] = $1;
+		 $$->child[1] = $3;
+		 $$->attr.op = GT;}
 	| simple-exp
 		{$$ = $1;}
 	;

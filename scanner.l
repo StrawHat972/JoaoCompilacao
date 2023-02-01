@@ -25,8 +25,9 @@ id		[a-zA-Z]+
 "-"			{return MINUS;}
 "*"			{return TIMES;}
 "/"			{return OVER;}
-"="			{return EQ;}
 "<"			{return LT;}
+"="			{return EQ;}
+">"			{return GT;}
 "("			{return LPAREN;}
 ")"			{return RPAREN;}
 ";"			{return SEMICOL;}

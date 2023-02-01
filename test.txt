@@ -8,8 +8,8 @@ repeat
     x := x + y * (3 + 2)
 until 100 < x;
 read z;
-if x < z then
-    write z + x
-else
+if x > z then
     write x - z
+else
+    write x + z
 end

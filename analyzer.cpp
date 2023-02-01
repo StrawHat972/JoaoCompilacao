@@ -26,7 +26,7 @@ void _insertNode(TreeNode* node){
 			switch(node->kind.exp){
 				case IdK:
 					if(symTab.find(string(node->attr.name)) == symTab.end())
-						symTab[string(node->attr.name)] = (--memOffset) * 4;
+						_typeError("Variable '" + string(node->attr.name) + "' not declared");
 					break;
 				default: break;
 			}
@@ -42,7 +42,7 @@ void _checkNode(TreeNode* node){
 				case OpK:
 					if(node->child[0]->type != Integer || node->child[1]->type != Integer)
 						_typeError("Operation applied to non-integer");
-					if(node->attr.op == LT || node->attr.op == EQ)
+					if(node->attr.op == LT || node->attr.op == EQ || node->attr.op == GT)
 						node->type = Boolean;
 					else
 						node->type = Integer;
