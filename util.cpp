@@ -194,11 +194,12 @@ bool _no_child(TreeNode* v)
 }
 
 map<TreeNode*, bool> visited;
-vector<string> cmds;
+vector<string> cmd;
+vector<vector<string>> cmds;
 
 void dfs(TreeNode* v)
 {
-	cmds.push_back(_print_node(v));
+	cmd.push_back(_print_node(v));
 	visited[v] = true;
 	for(int i = MAXCHILDREN-1; i >= 0; i--)
 	// for(int i = 0; i < MAXCHILDREN; i++)
@@ -214,27 +215,40 @@ void dfs(TreeNode* v)
 		*/
 		//if((v->kind.stmt == IfK && v->child[1] == NULL && v->child[2] != NULL && i == 1))
 		if((v->kind.stmt == IfK && v->child[1] != NULL && v->child[2] == NULL && i == 1))
-			cmds.push_back("LABEL");
+			cmd.push_back("LABEL");
 		if (v->kind.stmt == IfK && i == 1)
-			cmds.push_back("JUMP LABEL");
+			cmd.push_back("JUMP LABEL");
 		if (v->kind.stmt == IfK && v->child[1] != NULL && v->child[2] != NULL && i == 2)
-			cmds.push_back("LABEL");
-		
+			cmd.push_back("LABEL");
 	}
+	
+	if (v->sibling != NULL)
+	{
+		reverse(cmd.begin(), cmd.end());
+		cmds.push_back(cmd);
+		cmd.clear();
+		dfs(v->sibling);
+	}
+		
 }
 
 void generate_p_code(TreeNode* v)
 {
-	int i = 1;
-	while(v != NULL)
+	dfs(v);
+	reverse(cmd.begin(), cmd.end());
+	cmds.push_back(cmd);
+	cmd.clear();
+	
+	int k = 1;
+	for(vector<string> i : cmds) 
 	{
-		printf("\nInstrucao %d\n", i++);
-		dfs(v);
-		reverse(cmds.begin(), cmds.end());
-		for(string i : cmds) 
-			cout << i << endl;
-		cmds.clear();
-
-		v = v->sibling;
+		cout << "\nInst: " << k++ << endl << endl;
+		for(string j : i)
+			cout << j << endl;
 	}
+		
+	// 	cmds.clear();
+
+	// 	v = v->sibling;
+	// }
 }
