@@ -19,10 +19,13 @@ int main(int argc, char *argv[]){
 	fclose(source);
 
 	if(!Error){
-		printTree(SyntaxTree);
+		// printTree(SyntaxTree);
 		analyze(SyntaxTree);
+		cout << "\nDFS:\n";
+		generate_3_add_code(SyntaxTree);
 	}
 	if(!Error)
+		cout << "\n";
 		printSymTab();
 	deleteTree(&SyntaxTree);
 	return 0;
