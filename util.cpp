@@ -95,7 +95,7 @@ string _print_node(TreeNode * tree)
 	if(tree->nodeK == StmtK){
 		switch(tree->kind.stmt){
 			case IfK:
-				return "IF ";
+				return "";	//IF retorna string vazia mesmo
 			case RepeatK:
 				return "REPEAT ";
 			case AssignK:
@@ -146,16 +146,9 @@ bool _no_child(TreeNode* v)
 map<TreeNode*, bool> visited;
 vector<string> cmds;
 string helper = "";
-
-void generate_3_add_code(TreeNode* v)
-{
-	dfs(v);
-	cmds.push_back(helper);
-	helper = "";
-	reverse(cmds.begin(), cmds.end());
-	for(string i : cmds) 
-  		cout << i << endl;
-}
+int if_flag = 0;
+bool flag_if1 = false;
+bool flag_if2 = false;
 
 void dfs(TreeNode* v)
 {
@@ -163,27 +156,34 @@ void dfs(TreeNode* v)
 	{
 		helper += _print_node(v);
 	}
-	else //if(! done.count(v))
+	else
 	{
-		//Se todos os filhos foram visitados, printa
-		for(int i = MAXCHILDREN-1; i >= 0; i--)
-		{
-			if(v->child[i] != NULL && !visited.count(v->child[i]))
-				break;
-		}
-		//Se chegou aqui, todos foram visitados
 		cmds.push_back(helper);
 		helper = "";
 		helper += _print_node(v);
-		
 	}
 	
 	visited[v] = true;
 	for(int i = MAXCHILDREN-1; i >= 0; i--)
+	// for(int i = 0; i < MAXCHILDREN; i++)
 	{
 		if(v->child[i] != NULL && ! visited.count(v->child[i]))
 		{
 			dfs(v->child[i]);
 		}
+
+		if (v->kind.stmt == IfK && i == 0)
+			cmds.push_back("IF");
 	}
+}
+
+void generate_3_add_code(TreeNode* v)
+{
+	if_flag = 0;
+	dfs(v);
+	cmds.push_back(helper);
+	helper = "";
+	reverse(cmds.begin(), cmds.end());
+	for(string i : cmds) 
+  		cout << i << endl;
 }

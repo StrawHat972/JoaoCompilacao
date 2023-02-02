@@ -9,7 +9,7 @@
 #define TRUE 1
 
 typedef enum {StmtK, ExpK} NodeKind;
-typedef enum {IfK, RepeatK, AssignK, ReadK, WriteK} StmtKind;
+typedef enum {RepeatK, AssignK, ReadK, WriteK, IfK} StmtKind;
 typedef enum {OpK, ConstK, IdK} ExpKind;
 typedef enum {Void, Integer, Boolean} ExpType;
 
@@ -36,5 +36,4 @@ TreeNode* parser();
 char* copyStr(char* str);
 void deleteTree(TreeNode** root);
 void printTree(TreeNode* tree);
-void dfs(TreeNode* tree);
 void generate_3_add_code(TreeNode* v);

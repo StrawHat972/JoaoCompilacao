@@ -1,1 +1,1 @@
-if a < b then write a + b end
+if a < b then write a + b + c else write a - b - c end
