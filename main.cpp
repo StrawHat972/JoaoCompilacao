@@ -19,10 +19,10 @@ int main(int argc, char *argv[]){
 	fclose(source);
 
 	if(!Error){
-		// printTree(SyntaxTree);
+		printTree(SyntaxTree);
 		analyze(SyntaxTree);
 		cout << "\nDFS:\n";
-		generate_3_add_code(SyntaxTree);
+		generate_p_code(SyntaxTree);
 	}
 	if(!Error)
 		cout << "\n";

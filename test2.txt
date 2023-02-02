@@ -1,1 +1,4 @@
+a := 0;
+b := 5;
+c := 1;
 if a < b then write a + b + c else write a - b - c end

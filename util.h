@@ -36,4 +36,4 @@ TreeNode* parser();
 char* copyStr(char* str);
 void deleteTree(TreeNode** root);
 void printTree(TreeNode* tree);
-void generate_3_add_code(TreeNode* v);
+void generate_p_code(TreeNode* v);
