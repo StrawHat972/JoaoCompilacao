@@ -220,7 +220,12 @@ void dfs(TreeNode* v)
 			}
 
 			if(i == 0)
+			{
+				cmds.push_back(cmd);
+				cmd.clear();
 				cmd.push_back("JUMP TO REPEAT LABEL");
+			}
+				
 		}
 	}
 	else
@@ -238,6 +243,7 @@ void dfs(TreeNode* v)
 				cmd.push_back("IF LABEL");
 			if (i == 1)
 				cmd.push_back("JUMP TO IF LABEL");
+				
 			if (v->child[1] != NULL && v->child[2] != NULL && i == 0)
 				cmd.push_back("IF LABEL");
 		}
@@ -256,7 +262,9 @@ void dfs(TreeNode* v)
 void generate_p_code(TreeNode* v)
 {
 	dfs(v);
-	
+	cmds.push_back(cmd);
+	cmd.clear();
+	// dfs(v->sibling);
 
 	vector<vector<string>> p_code;
 
