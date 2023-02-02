@@ -25,8 +25,11 @@ int main(int argc, char *argv[]){
 		generate_p_code(SyntaxTree);
 	}
 	if(!Error)
+	{
 		cout << "\n";
 		printSymTab();
+	}
+		
 	deleteTree(&SyntaxTree);
 	return 0;
 }

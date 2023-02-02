@@ -9,7 +9,7 @@
 #define TRUE 1
 
 typedef enum {StmtK, ExpK} NodeKind;
-typedef enum {RepeatK, AssignK, ReadK, WriteK, IfK} StmtKind;
+typedef enum {AssignK, ReadK, WriteK, IfK, RepeatK} StmtKind;
 typedef enum {OpK, ConstK, IdK} ExpKind;
 typedef enum {Void, Integer, Boolean} ExpType;
 

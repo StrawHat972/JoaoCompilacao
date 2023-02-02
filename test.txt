@@ -5,13 +5,16 @@
 x := 4;
 repeat
     read y;
+    repeat read z; read w; read t until z < w;
     read y;
-    read x;
-    x := x + y * (3 + 2)
+    x := x + y * (3 + 2);
+    read x
+    
 until 100 < x;
 read z;
 if x > z then
     write x - z
 else
     write x + z
-end
+end;
+read s

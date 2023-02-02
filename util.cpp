@@ -98,7 +98,7 @@ string _print_node(TreeNode * tree)
 			case IfK:
 				return "";	//IF retorna string vazia mesmo
 			case RepeatK:
-				return "REPEAT ";
+				return "REPEAT";
 			case AssignK:
 				return "ASSIGN: " + string(tree->attr.name) + " ";
 			case ReadK:
@@ -201,27 +201,49 @@ void dfs(TreeNode* v)
 {
 	cmd.push_back(_print_node(v));
 	visited[v] = true;
-	for(int i = MAXCHILDREN-1; i >= 0; i--)
-	// for(int i = 0; i < MAXCHILDREN; i++)
-	{
-		if(v->child[i] != NULL && ! visited.count(v->child[i]))
-		{
-			dfs(v->child[i]);
-		}
-		/*
-			ISSO AQUI PRECISA MUDAR. ATUALMENTE, O ELSE ESTA EM child[2], ELE PRECISA IR PRO child[1]
 
-			Por isso, os indices do codigo abaixo deverao mudar para se adequar
-		*/
-		//if((v->kind.stmt == IfK && v->child[1] == NULL && v->child[2] != NULL && i == 1))
-		if((v->kind.stmt == IfK && v->child[1] != NULL && v->child[2] == NULL && i == 1))
-			cmd.push_back("LABEL");
-		if (v->kind.stmt == IfK && i == 1)
-			cmd.push_back("JUMP LABEL");
-		if (v->kind.stmt == IfK && v->child[1] != NULL && v->child[2] != NULL && i == 2)
-			cmd.push_back("LABEL");
-	}
 	
+	if(v->kind.stmt != IfK && v->kind.stmt != RepeatK)
+	{
+		for(int i = MAXCHILDREN-1; i >= 0; i--)
+		{	
+			if(v->child[i] != NULL && (! visited.count(v->child[i])))
+				dfs(v->child[i]);
+		}
+	}else if(v->kind.stmt == RepeatK)
+	{
+		for(int i = 0; i < MAXCHILDREN; i++)
+		{		
+			if(v->child[i] != NULL && ! visited.count(v->child[i]))
+			{
+				dfs(v->child[i]);
+			}
+
+			if(i == 0)
+				cmd.push_back("JUMP TO REPEAT LABEL");
+		}
+	}
+	else
+	{
+		int indexes[3] = {1,2,0};
+
+		for(int i = 0; i < MAXCHILDREN; i++)
+		{
+			if(v->child[indexes[i]] != NULL && ! visited.count(v->child[indexes[i]]))
+			{
+				dfs(v->child[indexes[i]]);
+			}
+
+			if (v->child[1] != NULL && v->child[2] == NULL && i == 1)
+				cmd.push_back("IF LABEL");
+			if (i == 1)
+				cmd.push_back("JUMP TO IF LABEL");
+			if (v->child[1] != NULL && v->child[2] != NULL && i == 0)
+				cmd.push_back("IF LABEL");
+		}
+		
+	}
+
 	if (v->sibling != NULL)
 	{
 		reverse(cmd.begin(), cmd.end());
@@ -229,22 +251,35 @@ void dfs(TreeNode* v)
 		cmd.clear();
 		dfs(v->sibling);
 	}
-		
 }
 
 void generate_p_code(TreeNode* v)
 {
 	dfs(v);
-	reverse(cmd.begin(), cmd.end());
-	cmds.push_back(cmd);
-	cmd.clear();
 	
+
+	vector<vector<string>> p_code;
+
 	int k = 1;
 	for(vector<string> i : cmds) 
 	{
-		cout << "\nInst: " << k++ << endl << endl;
 		for(string j : i)
+		{
+			if(j == "REPEAT")
+			{
+				reverse(i.begin(), i.end());
+			}
+		}
+		p_code.push_back(i);
+	}
+		
+	for(auto i: p_code)
+	{
+		cout << "\nInst: " << k++ << endl << endl;
+		for(auto j: i)
 			cout << j << endl;
+
+		
 	}
 		
 	// 	cmds.clear();
