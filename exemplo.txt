@@ -1,5 +1,0 @@
-a := 4
-repeat a := a - 1 until a > 0
-        prog
-          |
-        stmt

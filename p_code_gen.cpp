@@ -24,124 +24,132 @@ string _get_op(TokenType op){
 	}
 }
 
-string _print_node(TreeNode * tree)
-{
-	if(tree->nodeK == StmtK){
-		switch(tree->kind.stmt){
-			case IfK:
-				return "";	//IF retorna string vazia mesmo
-			case RepeatK:
-				return "REPEAT";
-			case AssignK:
-				return "ASSIGN: " + string(tree->attr.name) + " ";
-			case ReadK:
-				return "READ: " + string(tree->attr.name) + " ";
-			case WriteK:
-				return "WRITE ";
-			default:
-				return "Unknown StmtNode kind\n";
-		}
-	}
-	else if(tree->nodeK == ExpK){
-		switch(tree->kind.exp){
-			case OpK:
-				return _get_op(tree->attr.op) + " ";
-			case ConstK:
-				return to_string(tree->attr.val) + " ";
-			case IdK:
-				return string(tree->attr.name) + " ";
-			default:
-				return "Unknown ExpNode kind\n"; 
-		}
-	}
+int id_jump = 0;
+vector<p_node> cmds;
 
-	return ("Unknown node kind\n");
+p_node _expk_to_p(TreeNode *t)
+{
+	p_node p;
+	p.type_inst = UNDEFINED;
+	p.code = "";
+
+	switch(t->kind.exp)
+	{
+		case OpK:
+			p.type_inst = OP;
+			p.code = _get_op(t->attr.op);
+			return p;
+		case IdK:
+			p.type_inst = VAR;
+			p.code = string(t->attr.name);
+			return p;
+		case ConstK:
+			p.type_inst = NUM;
+			p.code = to_string(t->attr.val);
+			return p;
+		default:
+			break;
+	}
+	return p;
 }
 
-map<TreeNode*, bool> visited;
-vector<string> cmd;
-vector<vector<string>> cmds;
-
-void _dfs(TreeNode* v)
+p_node _stmtk_to_p(TreeNode *t)
 {
-	cmd.push_back(_print_node(v));
-	visited[v] = true;
-	int indexes[3] = {1,2,0};
-	
-	if(v->nodeK == StmtK && v->kind.stmt == IfK)
-		for(int i = 0; i < MAXCHILDREN; i++)
-		{
-			if(v->child[indexes[i]] != NULL && ! visited.count(v->child[indexes[i]]))
-			{
-				_dfs(v->child[indexes[i]]);
-			}
-
-			if (v->child[1] != NULL && v->child[2] == NULL && i == 1)
-				cmd.push_back("IF LABEL");
-			if (i == 1)
-				cmd.push_back("JUMP TO IF LABEL");
-				
-			if (v->child[1] != NULL && v->child[2] != NULL && i == 0)
-				cmd.push_back("IF LABEL");
-		}
-	else if(v->nodeK == StmtK && v->kind.stmt == RepeatK)
-		for(int i = 0; i < MAXCHILDREN; i++)
-		{		
-			if(v->child[i] != NULL && ! visited.count(v->child[i]))
-			{
-				_dfs(v->child[i]);
-			}
-
-			if(i == 0)
-			{
-				cmds.push_back(cmd);
-				cmd.clear();
-				cmd.push_back("JUMP TO REPEAT LABEL");
-			}
-		}
-	else
-		for(int i = MAXCHILDREN-1; i >= 0; i--)
-		{	
-			if(v->child[i] != NULL && (! visited.count(v->child[i])))
-				_dfs(v->child[i]);
-		}
-	
-	if (v->sibling != NULL)
+	p_node p;
+	p.type_inst = UNDEFINED;
+	p.code = "";
+	switch(t->kind.stmt)
 	{
-		reverse(cmd.begin(), cmd.end());
-		cmds.push_back(cmd);
-		cmd.clear();
-		_dfs(v->sibling);
+		case WriteK:
+			p.type_inst = P_WRITE;
+			p.code = "";
+			return p;
+		case ReadK:
+			p.type_inst = P_READ;
+			p.code = string(t->attr.name);
+			return p;
+		case AssignK:
+			p.type_inst = P_ASSIGN;
+			p.code = string(t->attr.name);
+		default:
+			break;
 	}
+	return p;
 }
 
-vector<vector<string>> generate_p_code(TreeNode* v)
+void gen_p_code(TreeNode *t)
 {
-	_dfs(v);
-	reverse(cmd.begin(), cmd.end());
-	cmds.push_back(cmd);
-	cmd.clear();
+	if(t == NULL)
+		return;
 
-	vector<vector<string>> p_code;
-
-	for(vector<string> i : cmds) 
+	if (t->nodeK == StmtK && t->kind.stmt == IfK)
 	{
-		for(string j : i)
-		{
-			if(j == "REPEAT")
-			{
-				reverse(i.begin(), i.end());
-			}
-		}
-		p_code.push_back(i);
+		p_node p;
+		gen_p_code(t->child[0]);
+
+		string jump = "J" + to_string(id_jump++);
+		
+		p.type_inst = JUMP;
+		p.code = jump;
+		cmds.push_back(p);
+
+		gen_p_code(t->child[2]);
+		string jump1 = "J" + to_string(id_jump++);
+		p.type_inst = JUMP;
+		p.code = jump1;
+		cmds.push_back(p);
+
+		p.type_inst = LABEL;
+		p.code = jump;
+		cmds.push_back(p);
+		
+		gen_p_code(t->child[1]);
+		p.type_inst = LABEL;
+		p.code = jump1;
+		cmds.push_back(p);
+	}
+	else if (t->nodeK == StmtK && t->kind.stmt == RepeatK)
+	{
+		p_node p;
+		string jump = "J" + to_string(id_jump++);
+		p.type_inst = LABEL;
+		p.code = jump;
+		cmds.push_back(p);
+		
+		gen_p_code(t->child[0]);
+		gen_p_code(t->child[1]);
+		
+		p.type_inst = JUMP;
+		p.code = jump;
+		cmds.push_back(p);
+	}else
+	{
+		for(int i = 0; i < MAXCHILDREN; i++)
+			gen_p_code(t->child[i]);
 	}
 
-	int k = 1;
-	for(auto i: p_code)
+	p_node p;
+	
+	if(t->nodeK == StmtK)
 	{
-		cout << "\nInst: " << k++ << endl << endl;
-		for(auto j: i)
-			cout << j << endl;
+		p = _stmtk_to_p(t);
+		if(p.type_inst != UNDEFINED)
+			cmds.push_back(p);
+	}else
+	{
+		p = _expk_to_p(t);
+		if(p.type_inst != UNDEFINED)
+			cmds.push_back(p);
 	}
-    return p_code;
+
+	gen_p_code(t->sibling);
+}
+
+void print_p_code(TreeNode *t)
+{
+	gen_p_code(t);
+	for(auto el: cmds)
+	{
+		cout << "TYPE_INST: " << el.type_inst << " CODE: " << el.code << endl;
+	}
 }

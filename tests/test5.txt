@@ -3,8 +3,8 @@ then
     write a + b + c ;
     read y;
     read z
-else 
+else
     write a - b - c ;
-    read s;
-    read t
+    read yyy;
+    read zzz
 end
