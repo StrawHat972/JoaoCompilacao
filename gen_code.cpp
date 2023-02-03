@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Code::Code(vector<vector<string>> p_code) {
+Code::Code(vector<p_node> p_code, string path) {
   this->p_code = p_code;
 
   out_string = ".text\n\n";
@@ -12,58 +12,85 @@ Code::Code(vector<vector<string>> p_code) {
   op_map["*"] = "mul";
   op_map["/"] = "div";
   op_map["<"] = "slt";
-  op_map["/"] = "sgt";
+  op_map[">"] = "slt";
   op_map["="] = "sub";
 
   out_string += "\
     addi sp sp -" + to_string(symTab.size() * 4) + "\n\
-    addi fp sp 0\n\
+    mv tp sp\n\
     li t0 0\n";
 
   for (unsigned int i = 0; i < symTab.size(); i++) {
     out_string += "\
-      sw t0 " + to_string((i+1)*4) + "(fp)\n";
+      sw t0 " + to_string(i*4) + "(tp)\n";
   }
 
   gen_code();
+  return_0();
+  save_file(path);
 }
 
 void Code::gen_code() {
   for (unsigned int i = 0; i < p_code.size(); i++) {
-    for (unsigned int j = 0; j < p_code[i].size(); j++) {
-      switch(conclusao) {
-        case IMM:
-          immediate();
-          save_stack();
-          break;
+    p_node node = p_code[i];
+    switch(node.type_inst) {
+      case NUM:
+        immediate(atoi(node.code.c_str()));
+        save_stack();
+        break;
 
-        case VAR:
-          variable();
-          save_stack();
-          break;
+      case VAR:
+        variable(node.code);
+        save_stack();
+        break;
 
-        case OPERATION:
-          load_two_stack();
-          operation(symbol);
-          save_stack();
-          break;
+      case OP:
+        load_two_stack();
+        operation(node.code);
+        if(node.code == "=" || node.code == ">") 
+          comp();
+        
+        save_stack();
+        break;
 
-        case READ:
-          read()
-          assign(variable);
-          break;
+      case P_READ:
+        read();
+        assign(node.code);
+        break;
 
-        case WRITE:
-          load_one_stack();
-          write();
-          break;
+      case P_WRITE:
+        load_one_stack();
+        write();
+        break;
 
-        case ASSIGN:
-          load_one_stack();
-          assign(variable);
-          break;
+      case P_ASSIGN:
+        load_one_stack();
+        assign(node.code);
+        break;
 
-      }
+      case LABEL:
+        label(node.code);
+        break;
+
+      case JUMP:
+        load_one_stack();
+        jump(node.code);
+        break;
+
+      case IN_JUMP:
+        load_one_stack();
+        in_jump(node.code);
+        break;
+
+      case RU_JUMP:
+        load_one_stack();
+        ru_jump(node.code);
+        break;
+
+      default:
+        cout << "CAIU NO DEFAULT PIRANHA" << endl;
+        break;
+
     }
   }
 }
@@ -82,7 +109,7 @@ void Code::immediate(int number) {
 
 void Code::variable(string var) {
   out_string += "\
-    lw t0 -" + to_string(symTab[var]) + "(fp)\n";
+    lw t0 " + to_string(symTab[var]) + "(tp)\n";
 }
 
 void Code::load_one_stack() {
@@ -101,12 +128,17 @@ void Code::load_two_stack() {
 
 void Code::operation(string op_symbol) {
   out_string += "\
-    " + op_map[op_symbol] + "t0 t0 t1\n";
+    " + op_map[op_symbol] + " t0 t0 t1\n";
+}
+
+void Code::comp() {
+  out_string+="\
+    seqz t0 t0\n";
 }
 
 void Code::assign(string var) {
   out_string += "\
-    sw t0 -" + to_string(symTab[var]) + "(fp)\n";
+    sw t0 " + to_string(symTab[var]) + "(tp)\n";
 }
 
 void Code::read() {
@@ -120,32 +152,45 @@ void Code::write() {
   out_string += "\
     mv a0 t0\n\
     li a7 1\n\
+    ecall\n\
+    li a0 10\n\
+    li a7 11\n\
     ecall\n";
 }
 
-vector<string> Code::string_split (string input, string delim = "\n")
-{
-  int len = input.length();
-  char cmd[len + 1];
-  strcpy(cmd, input.c_str());
-
-  len = delim.length();
-  char delimiter[len + 1];
-  strcpy(delimiter, delim.c_str());
-
-  char *ptr = strtok(cmd, delimiter);
-
-  vector<string> inst;
-
-  while(ptr != NULL) {
-    string tmp = ptr;
-    inst.push_back(tmp);
-    ptr = strtok(NULL, delimiter);
-  }
-
-  return inst;
+void Code::label(string label) {
+  out_string += "\
+    " + label + ":\n";
 }
 
-bool Code::is_number(string token) {
-  
+void Code::jump(string label) {
+  out_string += "\
+    li t1 1\n\
+    beq t0 t1 " + label + "\n";
+}
+
+void Code::ru_jump(string label) {
+  out_string += "\
+    li t1 0\n\
+    beq t0 t1 " + label + "\n";
+}
+
+void Code::in_jump(string label) {
+  out_string += "\
+    j " + label + "\n";
+}
+
+void Code::return_0(){
+  out_string += "\
+    addi tp tp " + to_string(symTab.size() * 4) + "\n\
+    mv sp tp\n\
+    li a7 10\n\
+    ecall\n";
+}
+
+void Code::save_file(string path) {
+  ofstream f;
+  f.open(path);
+  f << out_string;
+  f.close();
 }

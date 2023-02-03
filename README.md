@@ -9,7 +9,7 @@ make all
 
 Uma vez gerado o executável, para realizar a compilação é preciso passar o nome do arquivo de entrada por linha de comando, por exemplo:
 ```sh
-./compiler test.txt
+./compiler test.tiny
 ```
 
 Utilize o seguinte comando para excluir arquivos gerados pela compilação:
@@ -38,5 +38,5 @@ g++ -o compiler main.cpp parser.tab.c lex.yy.c util.c analyser.cpp
 
 Deve ser passado o nome do arquivo de entrada por linha de comando, por exemplo:
 ```sh
-./compiler test.txt
+./compiler test.tiny
 ```

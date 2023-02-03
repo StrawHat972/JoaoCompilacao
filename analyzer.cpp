@@ -18,7 +18,7 @@ void _insertNode(TreeNode* node){
 				case AssignK:
 				case ReadK:
 					if(symTab.find(string(node->attr.name)) == symTab.end())
-						symTab[string(node->attr.name)] = (--memOffset) * 4;
+						symTab[string(node->attr.name)] = (memOffset++) * 4;
 					break;
 				default: break;
             }
@@ -99,4 +99,3 @@ void printSymTab(){
 		cout << " " << it->second;
 	cout << endl;
 }
-

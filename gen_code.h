@@ -2,21 +2,22 @@
 #include <map>
 #include <string>
 #include <vector>
-#include <format>
-#include <regex>
+#include <fstream>
 #include "analyzer.h"
+#include "p_code_gen.h"
 
 class Code {
   public:
   
-  std::vector<std::vector<std::string>> p_code;
+  std::vector<p_node> p_code;
   std::string out_string;
   std::map<std::string, std::string> op_map;
 
-  Code(std::vector<std::vector<std::string>>);
+  Code(std::vector<p_node>, std::string);
 
   void save_stack();
   void immediate(int);
+  void comp();
   void variable(std::string);
 
   void load_one_stack();
@@ -25,16 +26,15 @@ class Code {
   void operation(std::string);
   void read();
   void write();
+  
+  void label(std::string);
+  void jump(std::string);
+  void in_jump(std::string);
+  void ru_jump(std::string);
 
   void assign(std::string);
+  void return_0();
 
   void gen_code();
-
-  private:
-  std::vector<std::string> string_split(std::string, std::string);
-
-  bool is_number(std::string);
-  bool is_var(std::string);
-  bool is_op(std::string);
-
+  void save_file(std::string);
 };

@@ -6,7 +6,7 @@
 #include <iostream>
 #include <algorithm>
 
-typedef enum{UNDEFINED, OP, NUM, VAR, P_READ, P_WRITE, P_ASSIGN, JUMP, LABEL} Inst;
+typedef enum{UNDEFINED, OP, NUM, VAR, P_READ, P_WRITE, P_ASSIGN, JUMP, LABEL, IN_JUMP, RU_JUMP} Inst;
 
 typedef struct
 {
@@ -14,6 +14,6 @@ typedef struct
     std::string code;
 }p_node;
 
-// std::vector<std::vector<std::string>> generate_p_code(TreeNode* v);
-void print_p_code(TreeNode *t);
+void print_p_code();
 void gen_p_code(TreeNode *t);
+std::vector<p_node> get_p_code(TreeNode *t);

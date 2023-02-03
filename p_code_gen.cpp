@@ -95,7 +95,7 @@ void gen_p_code(TreeNode *t)
 
 		gen_p_code(t->child[2]);
 		string jump1 = "J" + to_string(id_jump++);
-		p.type_inst = JUMP;
+		p.type_inst = IN_JUMP;
 		p.code = jump1;
 		cmds.push_back(p);
 
@@ -119,7 +119,7 @@ void gen_p_code(TreeNode *t)
 		gen_p_code(t->child[0]);
 		gen_p_code(t->child[1]);
 		
-		p.type_inst = JUMP;
+		p.type_inst = RU_JUMP;
 		p.code = jump;
 		cmds.push_back(p);
 	}else
@@ -145,11 +145,15 @@ void gen_p_code(TreeNode *t)
 	gen_p_code(t->sibling);
 }
 
-void print_p_code(TreeNode *t)
+void print_p_code()
 {
-	gen_p_code(t);
 	for(auto el: cmds)
 	{
 		cout << "TYPE_INST: " << el.type_inst << " CODE: " << el.code << endl;
 	}
+}
+
+vector<p_node> get_p_code(TreeNode *t) {
+	gen_p_code(t);
+	return cmds;
 }

@@ -2,6 +2,7 @@
 #include "analyzer.h"
 #include "parser.tab.h"
 #include "p_code_gen.h"
+#include "gen_code.h"
 
 using namespace std;
 
@@ -25,12 +26,16 @@ int main(int argc, char *argv[]){
 	}
 	if(!Error)
 	{
-		cout << "\nDFS:\n";
-		print_p_code(SyntaxTree);
-		cout << "\n";
 		printSymTab();
+		vector<p_node> p_code = get_p_code(SyntaxTree);
+		int i = string(argv[1]).find(".tiny");
+		string new_path = string(argv[1]).substr(0, i) + ".s";
+
+		Code(p_code, new_path);	
+
+		print_p_code();
 	}
-		
+
 	deleteTree(&SyntaxTree);
 	return 0;
 }
