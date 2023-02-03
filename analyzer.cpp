@@ -1,5 +1,6 @@
 #include "analyzer.h"
 #include "parser.tab.h"
+#include <stack>
 
 using namespace std;
 
@@ -98,3 +99,4 @@ void printSymTab(){
 		cout << " " << it->second;
 	cout << endl;
 }
+

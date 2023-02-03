@@ -1,0 +1,10 @@
+if a < b 
+then 
+    write a + b + c ;
+    read y;
+    read z
+else
+    write a - b - c ;
+    read yyy;
+    read zzz
+end

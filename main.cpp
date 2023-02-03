@@ -1,6 +1,7 @@
 #include "util.h"
 #include "analyzer.h"
 #include "parser.tab.h"
+#include "p_code_gen.h"
 
 using namespace std;
 
@@ -23,7 +24,13 @@ int main(int argc, char *argv[]){
 		analyze(SyntaxTree);
 	}
 	if(!Error)
+	{
+		cout << "\nDFS:\n";
+		print_p_code(SyntaxTree);
+		cout << "\n";
 		printSymTab();
+	}
+		
 	deleteTree(&SyntaxTree);
 	return 0;
 }
