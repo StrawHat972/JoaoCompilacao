@@ -17,4 +17,4 @@ if x > z then
 else
     write x + z
 end;
-read s
+repeat read z; read w; read t until z < w
