@@ -1,7 +1,6 @@
 /* Analisador Sintatico */
 %{
-	#include <stdio.h>
-	#include "util.h"
+	#include "analysis/syntaxTree.h"
 
 	extern int yylex();
 	extern FILE* yyin;

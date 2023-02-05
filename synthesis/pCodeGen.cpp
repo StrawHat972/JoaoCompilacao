@@ -1,5 +1,4 @@
-#include "p_code_gen.h"
-#include "parser.tab.h"
+#include "pCodeGen.h"
 
 using namespace std;
 
@@ -88,7 +87,7 @@ void gen_p_code(TreeNode *t)
 		gen_p_code(t->child[0]);
 
 		string jump = "J" + to_string(id_jump++);
-		
+
 		p.type_inst = JUMP;
 		p.code = jump;
 		cmds.push_back(p);
@@ -102,7 +101,7 @@ void gen_p_code(TreeNode *t)
 		p.type_inst = LABEL;
 		p.code = jump;
 		cmds.push_back(p);
-		
+
 		gen_p_code(t->child[1]);
 		p.type_inst = LABEL;
 		p.code = jump1;
@@ -115,10 +114,10 @@ void gen_p_code(TreeNode *t)
 		p.type_inst = LABEL;
 		p.code = jump;
 		cmds.push_back(p);
-		
+
 		gen_p_code(t->child[0]);
 		gen_p_code(t->child[1]);
-		
+
 		p.type_inst = RU_JUMP;
 		p.code = jump;
 		cmds.push_back(p);
@@ -129,7 +128,7 @@ void gen_p_code(TreeNode *t)
 	}
 
 	p_node p;
-	
+
 	if(t->nodeK == StmtK)
 	{
 		p = _stmtk_to_p(t);
@@ -148,9 +147,8 @@ void gen_p_code(TreeNode *t)
 void print_p_code()
 {
 	for(auto el: cmds)
-	{
 		cout << "TYPE_INST: " << el.type_inst << " CODE: " << el.code << endl;
-	}
+
 }
 
 vector<p_node> get_p_code(TreeNode *t) {

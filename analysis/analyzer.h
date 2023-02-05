@@ -1,5 +1,6 @@
 #pragma once
-#include "util.h"
+#include "../parser.tab.h"
+#include "syntaxTree.h"
 #include <iostream>
 #include <unordered_map>
 

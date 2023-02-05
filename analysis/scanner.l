@@ -1,7 +1,7 @@
 /* Analisador Lexico */
 %{
 	#include "parser.tab.h"
-	#include "util.h"
+	#include "analysis/syntaxTree.h"
 
 	#define copyStr(a, b) strncpy(a, b, MAXTOKENLEN)
 	char tokenStr[MAXTOKENLEN+1];

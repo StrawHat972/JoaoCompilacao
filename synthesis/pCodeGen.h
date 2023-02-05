@@ -1,6 +1,6 @@
 #pragma once
-#include "util.h"
-#include <map>
+#include "../parser.tab.h"
+#include "../analysis/syntaxTree.h"
 #include <vector>
 #include <string>
 #include <iostream>

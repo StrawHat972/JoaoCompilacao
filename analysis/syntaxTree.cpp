@@ -1,5 +1,5 @@
-#include "util.h"
-#include "parser.tab.h"
+#include "../parser.tab.h"
+#include "syntaxTree.h"
 
 TreeNode* newStmtNode(StmtKind kind){
     TreeNode* node = (TreeNode*) malloc(sizeof(TreeNode));

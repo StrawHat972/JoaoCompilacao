@@ -1,6 +1,5 @@
+/* Analisador Semantico */
 #include "analyzer.h"
-#include "parser.tab.h"
-#include <stack>
 
 using namespace std;
 
@@ -91,11 +90,9 @@ void analyze(TreeNode* tree){
 }
 
 void printSymTab(){
-	cout << "Var Symbol:";
-	for(auto it = symTab.cbegin(); it != symTab.cend(); it++)
-		cout << " " << it->first;
-	cout << endl << "Mem Offset:";
-	for(auto it = symTab.cbegin(); it != symTab.cend(); it++)
-		cout << " " << it->second;
-	cout << endl;
+	cout << "Symbol Table:\n";
+	for(auto it = symTab.cbegin(); it != symTab.cend(); it++){
+		cout << "  " << it->first << ":";
+		cout << "\t  " << it->second << endl;
+	}
 }

@@ -1,8 +1,8 @@
 all: program
 
 program:
-	bison -d parser.y
-	flex scanner.l
-	g++ -o compiler main.cpp parser.tab.c lex.yy.c util.c analyzer.cpp p_code_gen.cpp gen_code.cpp
+	bison -d analysis/parser.y
+	flex analysis/scanner.l
+	g++ -o compiler main.cpp parser.tab.c lex.yy.c analysis/*.cpp synthesis/*.cpp
 clean:
-	rm compiler parser.tab.h parser.tab.c lex.yy.c
+	rm compiler parser.tab.h parser.tab.c lex.yy.c tests/*.s
