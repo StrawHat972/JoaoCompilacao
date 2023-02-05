@@ -27,14 +27,14 @@ int main(int argc, char *argv[]){
 	fclose(source);
 
 	if(!Error){
-		printTree(SyntaxTree);
+		//printTree(SyntaxTree);
 		analyze(SyntaxTree);
 	}
 	if(!Error){
-		printSymTab();
+		//printSymTab();
 
 		vector<p_node> p_code = get_p_code(SyntaxTree);
-		print_p_code();
+		//print_p_code();
 
 		int i = string(argv[1]).find(".tiny");
 		string new_path = string(argv[1]).substr(0, i) + ".s";
