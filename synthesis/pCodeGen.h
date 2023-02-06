@@ -5,6 +5,7 @@
 #include <string>
 #include <iostream>
 #include <algorithm>
+#include <map>
 
 typedef enum{UNDEFINED, OP, NUM, VAR, P_READ, P_WRITE, P_ASSIGN, JUMP, LABEL, IN_JUMP, RU_JUMP} Inst;
 

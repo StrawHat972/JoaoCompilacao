@@ -90,9 +90,8 @@ void analyze(TreeNode* tree){
 }
 
 void printSymTab(){
-	cout << "Symbol Table:\n";
-	for(auto it = symTab.cbegin(); it != symTab.cend(); it++){
-		cout << "  " << it->first << ":";
-		cout << "\t  " << it->second << endl;
-	}
+	cout << "\tSYMBOL TABLE\n";
+	cout << "Var_Name\t  Mem_Location\n";
+	for(auto it = symTab.cbegin(); it != symTab.cend(); it++)
+		cout << "  " << it->first << "\t\t\t" << it->second << endl;
 }

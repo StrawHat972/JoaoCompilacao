@@ -146,8 +146,21 @@ void gen_p_code(TreeNode *t)
 
 void print_p_code()
 {
+	map<Inst, string> inst_map;
+	inst_map[UNDEFINED] = "Undefined";
+	inst_map[OP] 		= "Operation";
+	inst_map[NUM] 		= "Number";
+	inst_map[VAR] 		= "Identifier";
+	inst_map[P_READ] 	= "Read";
+	inst_map[P_WRITE] 	= "Write";
+	inst_map[P_ASSIGN] 	= "Assign";
+	inst_map[JUMP] 		= "Jump";
+	inst_map[LABEL] 	= "Label";
+	inst_map[IN_JUMP] 	= "In_Jump";
+	inst_map[RU_JUMP] 	= "Ru_Jump";
+
 	for(auto el: cmds)
-		cout << "TYPE_INST: " << el.type_inst << " CODE: " << el.code << endl;
+		cout << "TYPE_INST: " << inst_map[el.type_inst] << "  \tCODE: " << el.code << endl;
 
 }
 

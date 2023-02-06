@@ -12,7 +12,19 @@ Uma vez gerado o executável, para realizar a compilação é preciso passar o n
 ./compiler tests/fatorial.tiny
 ```
 
-Utilize o seguinte comando para excluir arquivos gerados pela compilação:
+Pode-se também utilizar diretivas de compilação como por exemplo:
+```sh
+./compiler -a tests/fatorial.tiny
+```
+
+As diretivas válidas são -t para mostrar a Árvore Sintática gerada, -s para a Tabela de Símbolos, -p para o Código Intermediário (P-Code) ou -a para mostrar todos os três.
+
+Com o código compilado para Assembly RISC-V, utilize o seguinte comando para então executá-lo (caso alguma janela seja aberta, apenas a ignore):
+```sh
+./fpgrars tests/fatorial.s
+```
+
+Utilize o comando a seguir para excluir arquivos gerados pela compilação:
 ```sh
 make clean
 ```
@@ -36,13 +48,6 @@ Uma vez gerados os dois códigos, basta compilá-los usando o comando a seguir:
 g++ -o compiler main.cpp parser.tab.c lex.yy.c analysis/*.cpp synthesis/*.cpp
 ```
 
-Deve ser passado o nome do arquivo de entrada por linha de comando, por exemplo:
-```sh
-./compiler tests/fatorial.tiny
-```
+Depois disso é só seguir o mesmo passo-a-passo apresentado anteriormente para o make.
 
-
-Uma fez gerado o código compilado, para testar sua execução utilize o seguinte comando (ignore a janela que será aberta):
-```sh
-./fpgrars tests/fatorial.s
-```
+Observação: O executável fpgrars.exe só funciona em Windows.
