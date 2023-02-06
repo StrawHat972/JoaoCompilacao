@@ -29,7 +29,7 @@ Utilize o comando a seguir para excluir arquivos gerados pela compilação (só 
 make clean
 ```
 
-Caso não possa utilizar a diretiva make, o seguinte passo a passo é necessário para realizar a compilação:
+Caso não possa utilizar a diretiva make, o seguinte passo a passo é necessário para realizar a compilação.
 
 Primeiro, gere o código C do analisador sintático por meio do seguinte comando:
 ```sh
@@ -48,6 +48,6 @@ Uma vez gerados os dois códigos, basta compilá-los usando o comando a seguir:
 g++ -o compiler main.cpp parser.tab.c lex.yy.c analysis/*.cpp synthesis/*.cpp
 ```
 
-Depois disso é só seguir o mesmo passo-a-passo apresentado anteriormente para o make.
+Depois disso é só seguir o mesmo passo a passo apresentado anteriormente para o make.
 
 Observação: O executável fpgrars.exe só funciona em Windows.
