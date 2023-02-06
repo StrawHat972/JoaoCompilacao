@@ -24,7 +24,7 @@ Com o código compilado para Assembly RISC-V, utilize o seguinte comando para en
 ./fpgrars tests/fatorial.s
 ```
 
-Utilize o comando a seguir para excluir arquivos gerados pela compilação:
+Utilize o comando a seguir para excluir arquivos gerados pela compilação (só funciona no Linux ou no WSL):
 ```sh
 make clean
 ```
