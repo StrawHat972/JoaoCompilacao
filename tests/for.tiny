@@ -1,0 +1,12 @@
+x := 0;
+y := 0;
+
+repeat
+  repeat
+    write x;
+    write y;
+    x := x + 1
+  until x = 3;
+  x := 0;
+  y := y + 1
+until y = 3

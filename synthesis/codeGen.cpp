@@ -41,8 +41,10 @@ void Code::gen_code() {
 				break;
 			case OP:
 				load_two_stack();
+				if (node.code == ">")
+					invert_temps();
 				operation(node.code);
-				if(node.code == "=" || node.code == ">") 
+				if(node.code == "=") 
 					comp();
 				save_stack();
 				break;
@@ -77,6 +79,12 @@ void Code::gen_code() {
 				break;
 		}
 	}
+}
+
+void Code::invert_temps() {
+	out_string += "\tmv t2 t0\n";
+	out_string += "\tmv t0 t1\n";
+	out_string += "\tmv t1 t2\n";
 }
 
 void Code::save_stack() {
