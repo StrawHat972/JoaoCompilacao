@@ -19,10 +19,10 @@ class Code {
 	void immediate(int);
 	void comp();
 	void variable(std::string);
-	void invert_temps();
 
 	void load_one_stack();
 	void load_two_stack();
+	void load_two_invert();
 
 	void operation(std::string);
 	void read();

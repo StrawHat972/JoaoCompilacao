@@ -1,8 +1,12 @@
-x := 5;
+read x;
 if x < 10 then
   if x > 5 then
      write 1
   else
-    write 0
+    if x < 5 then
+      write 0-1
+    else
+      write 0
+    end
   end
 end

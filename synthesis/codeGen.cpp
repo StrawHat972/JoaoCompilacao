@@ -40,11 +40,9 @@ void Code::gen_code() {
 				save_stack();
 				break;
 			case OP:
-				load_two_stack();
-				if (node.code == ">")
-					invert_temps();
+				node.code == ">" ? load_two_invert() : load_two_stack();
 				operation(node.code);
-				if(node.code == "=") 
+				if (node.code == "=") 
 					comp();
 				save_stack();
 				break;
@@ -81,12 +79,6 @@ void Code::gen_code() {
 	}
 }
 
-void Code::invert_temps() {
-	out_string += "\tmv t2 t0\n";
-	out_string += "\tmv t0 t1\n";
-	out_string += "\tmv t1 t2\n";
-}
-
 void Code::save_stack() {
 	out_string += "\taddi sp sp -4\n";
 	out_string += "\tsw t0 0(sp)\n";
@@ -109,6 +101,13 @@ void Code::load_two_stack() {
 	out_string += "\tlw t1 0(sp)\n";
 	out_string += "\taddi sp sp 4\n";
 	out_string += "\tlw t0 0(sp)\n";
+	out_string += "\taddi sp sp 4\n";
+}
+
+void Code::load_two_invert() {
+	out_string += "\tlw t0 0(sp)\n";
+	out_string += "\taddi sp sp 4\n";
+	out_string += "\tlw t1 0(sp)\n";
 	out_string += "\taddi sp sp 4\n";
 }
 
